@@ -1,0 +1,33 @@
+@echo off
+chcp 65001 >nul
+
+:: Template: double-click launcher that runs KnowledgeFactory inside WSL.
+::
+:: How to use
+::   1. Copy this file OUTSIDE the repo (e.g. C:\Users\<you>\Scripts) and rename it to
+::      start_youtube_factory_wsl.bat
+::   2. Replace "Ubuntu-24.04" with your WSL distro name (list them with:  wsl -l -q)
+::   3. Replace "~/KnowledgeFactory" with the folder where you cloned this project inside WSL
+::   4. Make sure the virtual environment exists in that folder (.venv) and that output_dir in
+::      sync_agent.py is a Linux path (e.g. /mnt/c/Users/<you>/Notes or /mnt/g/...), not C:\...
+::   5. Copy a YouTube URL, then double-click the .bat
+::
+:: The URL is read from the Windows clipboard by sync_agent.py.
+:: Keep this file ASCII-only: Chinese text in a .bat file breaks under chcp 65001.
+wsl.exe -d Ubuntu-24.04 -- bash -lc "cd ~/KnowledgeFactory && .venv/bin/python -u sync_agent.py"
+
+:: Error check: only pause the window on failure so you can read the error
+if %errorlevel% neq 0 (
+    echo.
+    echo =======================================
+    echo [FAILED] Task failed. Scroll up to see the error.
+    echo =======================================
+    pause
+    exit /b 1
+)
+
+echo.
+echo =======================================
+echo [DONE] Task finished. Closing in 5 seconds...
+echo =======================================
+timeout /t 5 > nul
