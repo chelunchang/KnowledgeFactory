@@ -4,6 +4,7 @@ load_dotenv()  # 安全讀取 .env 金鑰
 import os
 import sys
 import asyncio
+import re
 import pyperclip  # 引入剪貼簿套件
 from google.antigravity import Agent, LocalAgentConfig
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -67,6 +68,17 @@ def get_video_id(url):
     elif "v=" in url:
         return url.split("v=")[1].split("&")[0].split("#")[0]
     return None
+
+def strip_code_fence(text: str) -> str:
+    # Gemini 有時會把整份筆記包在 ```markdown ... ``` 裡（有時圍欄後還附上「工作報告」之類的說明），
+    # Obsidian 會把它當成程式碼區塊顯示。圍欄行數為偶數代表外層有正確閉合，才去除外層與後面的說明；
+    # 筆記內部本來就有的程式碼區塊（例如 mermaid）不受影響。
+    lines = text.strip().splitlines()
+    fence_idx = [i for i, l in enumerate(lines) if l.strip().startswith("```")]
+    if (len(fence_idx) >= 2 and len(fence_idx) % 2 == 0 and fence_idx[0] == 0
+            and re.match(r"^```(markdown|md)?\s*$", lines[0].strip(), re.I)):
+        return "\n".join(lines[1:fence_idx[-1]]).strip() + "\n"
+    return text
 
 async def main():
     # =========================================================================
@@ -150,6 +162,7 @@ async def main():
     try:
         prompt = f"請幫我將以下逐字稿整理成漂亮的 Obsidian 筆記：\n\n{raw_text}"
         ai_text = await chat_with_retry(config, prompt)
+        ai_text = strip_code_fence(ai_text)  # 去掉外層程式碼圍欄，避免 Obsidian 整篇顯示成程式碼
 
         # ─── 階段三：自動寫入（請改成你自己的筆記輸出路徑） ───
         output_dir = r"C:\path\to\your\Notes\YouTube_Notes"
