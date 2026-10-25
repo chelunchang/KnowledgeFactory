@@ -25,8 +25,11 @@ cd KnowledgeFactory
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
-pip install python-dotenv pyperclip requests google-antigravity "youtube-transcript-api>=1.0"
+pip install -r requirements.txt
 ```
+
+> `requirements.txt` 已鎖定套件版本（`google-antigravity==0.1.5`）。`sync_agent.py` 內也明確指定了 `model="gemini-3.5-flash"`，
+> 避免套件升級後預設模型改變，導致速度或筆記格式跟著變。要換模型時，請修改 `sync_agent.py` 裡的 `model=`。
 
 ---
 
