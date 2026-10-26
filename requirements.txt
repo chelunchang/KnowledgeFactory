@@ -1,0 +1,5 @@
+python-dotenv==1.2.2
+pyperclip==1.11.0
+requests==2.34.2
+google-antigravity==0.1.5
+youtube-transcript-api==1.2.4

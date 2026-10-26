@@ -1,0 +1,32 @@
+@echo off
+
+:: Template: double-click launcher for native Windows (Python installed on Windows).
+::
+:: How to use
+::   1. Copy this file OUTSIDE the repo (e.g. C:\Users\<you>\Scripts) and rename it to
+::      start_youtube_factory.bat
+::   2. Replace C:\path\to\your\KnowledgeFactory with the folder where you cloned this project
+::   3. Copy a YouTube URL, then double-click the .bat
+::
+:: Keep this file ASCII-only: Chinese text in a .bat file breaks on Traditional Chinese Windows.
+
+cd /d C:\path\to\your\KnowledgeFactory
+
+:: Call the virtual environment's python.exe directly (more robust than activate.bat)
+.venv\Scripts\python.exe sync_agent.py
+
+:: Error check: only pause the window on failure so you can read the error
+if %errorlevel% neq 0 (
+    echo.
+    echo =======================================
+    echo [FAILED] Task failed. Scroll up to see the error.
+    echo =======================================
+    pause
+    exit /b 1
+)
+
+echo.
+echo =======================================
+echo [DONE] Task finished. Closing in 5 seconds...
+echo =======================================
+timeout /t 5 > nul

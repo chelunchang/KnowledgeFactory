@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environment
+.venv/
+
+# Environment variables（含 API Key 與個人路徑）
+.env
+
+# 你實際使用的啟動器（repo 內只保留 launchers/*.bat.example 範本）
+launchers/*.bat
+
+# OS
+.DS_Store
+Thumbs.db
